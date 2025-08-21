@@ -1,6 +1,29 @@
 node_modules
 venv/
 
-# Ignore lock files của LibreOffice / OpenOffice
+# -------------------------
+# Ignore file tạm Microsoft Office & LibreOffice
+# -------------------------
+
+# Excel temp files (MS Office)
+~$*.xls*
+*.xlk
+
+# Word temp files (MS Office)
+~$*.doc*
+*.wbk
+
+# PowerPoint temp files (MS Office)
+~$*.ppt*
+*.ppam
+*.ppsm
+*.ppsx
+*.pptm
+*.potx
+*.potm
+
+# LibreOffice / OpenOffice lock files
 .~lock.*#
 
+# General Office backup files
+*.bak
