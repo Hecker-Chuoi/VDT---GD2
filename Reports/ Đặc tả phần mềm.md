@@ -1,7 +1,21 @@
 # Đặc tả phần mềm
-## Sơ đồ usecase
-## Scenario
-### View topology
+
+- [Đặc tả phần mềm](#đặc-tả-phần-mềm)
+  - [1. Sơ đồ usecase](#1-sơ-đồ-usecase)
+  - [2. Scenario](#2-scenario)
+    - [2.1. View topology](#21-view-topology)
+  - [3. Danh sách API](#3-danh-sách-api)
+    - [3.1. GET](#31-get)
+      - [3.1.1. */api/services*](#311-apiservices)
+      - [3.1.2. */api/services/{serviceId}/group-modules*](#312-apiservicesserviceidgroup-modules)
+      - [3.1.3. */api/services/{serviceId}/databases*](#313-apiservicesserviceiddatabases)
+      - [3.1.4. */api/services/{serviceId}/load-balancers*](#314-apiservicesserviceidload-balancers)
+      - [3.1.5. */api/modules/{moduleId}/connections*](#315-apimodulesmoduleidconnections)
+      - [3.1.6. */api/servers/{serverId}*](#316-apiserversserverid)
+
+## 1. Sơ đồ usecase
+## 2. Scenario
+### 2.1. View topology
 |Usecase|View topology|
 |---|---|
 |Actor|System monitor|
@@ -9,9 +23,9 @@
 |Kịch bản chính|<ol><li>System monitor đăng nhập thành công</li><li>Trang chủ hiện lên, hiển thị danh sách các dịch vụ đang được giám sát</br><table><thead><tr><th>STT</th><th>Mã dịch vụ</th><th>Tên dịch vụ</th></tr></thead><tbody><tr><td>1</td><td>AUTH</td><td>Authentication service</td></tr><tr><td>2</td><td>BILL</td><td>Billing service</td></tr><tr><td>3</td><td>NMS</td><td>Network management service</td></tr></tbody></table></li><li>System monitor chọn dịch vụ <i>Billing service</i> </li><li>Hệ thống hiển thị topo của dịch vụ <i>Billing service</i></li><li>System monitor chọn thoát/trang chủ</li><li>Hệ thống quay lại trang chủ</li></ol>|
 |Ngoại lệ||
 
-## Danh sách API
-### GET
-#### */api/services*
+## 3. Danh sách API
+### 3.1. GET
+#### 3.1.1. */api/services*
 **Mục đích**  
 Lấy danh sách toàn bộ service đang được giám sát.
 
@@ -54,7 +68,7 @@ Lấy danh sách toàn bộ service đang được giám sát.
    }
    ```
 
-#### */api/services/{serviceId}/group-modules*
+#### 3.1.2. */api/services/{serviceId}/group-modules*
 **Mục đích**  
 Lấy danh sách group module của một service, bao gồm danh sách các module trong group.
 
@@ -106,7 +120,7 @@ Lấy danh sách group module của một service, bao gồm danh sách các mod
    }
    ```
 
-#### */api/services/{serviceId}/databases*
+#### 3.1.3. */api/services/{serviceId}/databases*
 **Mục đích**  
 Lấy danh sách database của một service.
 
@@ -149,7 +163,7 @@ Lấy danh sách database của một service.
    }
    ```
    
-#### */api/services/{serviceId}/load-balancers*
+#### 3.1.4. */api/services/{serviceId}/load-balancers*
 **Mục đích**  
 Lấy danh sách *load balancer* của một service.
 
@@ -185,7 +199,7 @@ Lấy danh sách *load balancer* của một service.
    }
    ```
 
-#### */api/modules/{moduleId}/connections*
+#### 3.1.5. */api/modules/{moduleId}/connections*
 **Mục đích**  
 Lấy danh sách toàn bộ service đang được giám sát.
 
@@ -233,7 +247,7 @@ Lấy danh sách toàn bộ service đang được giám sát.
    * `type = type`
 3. Trả về danh sách connection tương ứng với điều kiện
 
-#### */api/servers/{serverId}*
+#### 3.1.6. */api/servers/{serverId}*
 **Mục đích**  
 Trả về danh sách các node (module, database, storage) đang chạy trên server.
 
