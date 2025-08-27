@@ -2,6 +2,8 @@ package vn.viettel.vdt_gd2.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.util.List;
 
 @Entity
@@ -10,26 +12,27 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Service {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class ServiceEntity {
     @Id
     @Column(name = "id")
-    private Integer id;
+    Integer id;
 
     @Column(name = "service_code")
-    private String serviceCode;
+    String serviceCode;
 
     @Column(name = "service_name")
-    private String serviceName;
+    String serviceName;
 
     @OneToMany(mappedBy = "service")
-    private List<GroupModule> groupModules;
+    List<GroupModule> groupModules;
+
+//    @OneToMany(mappedBy = "service")
+//    List<Module> modules;
 
     @OneToMany(mappedBy = "service")
-    private List<Module> modules;
+    List<Database> databases;
 
     @OneToMany(mappedBy = "service")
-    private List<Database> databases;
-
-    @OneToMany(mappedBy = "service")
-    private List<LoadBalance> loadBalances;
+    List<LoadBalancer> loadBalances;
 }

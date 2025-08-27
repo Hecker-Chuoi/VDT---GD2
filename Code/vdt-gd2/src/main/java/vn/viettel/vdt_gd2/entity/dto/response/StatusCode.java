@@ -1,5 +1,7 @@
 package vn.viettel.vdt_gd2.entity.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum StatusCode {
     OK(200, "Success"),
     CREATED(201, "Created"),
@@ -25,4 +27,5 @@ public enum StatusCode {
     public String getMessage() {
         return message;
     }
+
 }

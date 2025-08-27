@@ -30,10 +30,10 @@ def insert_data(table, df, columns):
 # Nạp dữ liệu theo thứ tự quan hệ
 insert_data("service", data["Service"], ["id", "service_code", "service_name"])
 insert_data("group_module", data["GroupModule"], ["id", "service_id", "group_module_code", "group_module_name"])
-insert_data("instance", data["Instance"], ["id", "instance_ip"])
-insert_data("module", data["Module"], ["id", "group_module_id", "service_id", "instance_id", "module_code", "module_name"])
-insert_data("database_entity", data["Database"], ["id", "database_code", "database_name", "instance_id", "service_id"])
-insert_data("storage", data["Storage"], ["id", "storage_name", "storage_code", "instance_id"])
+insert_data("server", data["Server"], ["id", "server_ip"])
+insert_data("module", data["Module"], ["id", "group_module_id", "service_id", "server_id", "module_code", "module_name"])
+insert_data("database", data["Database"], ["id", "database_code", "database_name", "server_id", "service_id"])
+insert_data("storage", data["Storage"], ["id", "storage_name", "storage_code", "server_id"])
 insert_data("load_balance", data["LoadBalance"], ["id", "lb_code", "lb_name", "ip", "port", "service_id"])
 
 # Với Connection, cần bỏ mấy dòng mô tả đầu => chỉ lấy từ dòng có id

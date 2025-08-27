@@ -2,6 +2,7 @@ package vn.viettel.vdt_gd2.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "Connection")
@@ -9,28 +10,29 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Connection {
     @Id
     @Column(name = "id")
-    private Integer id;
+    Integer id;
 
     @ManyToOne
     @JoinColumn(name = "service_module_id_source")
-    private Module sourceModule;
+    Module sourceModule;
 
     @ManyToOne
     @JoinColumn(name = "service_module_id_dest")
-    private Module destModule;
+    Module destModule;
 
     @Column(name = "ip_source")
-    private String ipSource;
+    String ipSource;
 
     @Column(name = "ip_dest")
-    private String ipDest;
+    String ipDest;
 
     @Column(name = "port")
-    private Integer port;
+    Integer port;
 
     @Column(name = "type")
-    private Integer type;
+    Integer type;
 }

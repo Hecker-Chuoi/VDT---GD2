@@ -8,18 +8,20 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "Instance")
+@Table(name = "server")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Instance {
+@FieldDefaults(level = lombok.AccessLevel.PRIVATE)
+public class Server {
     @Id
     @Column(name = "id")
-    private Integer id;
+    Integer id;
 
     @Column(name = "instance_ip")
-    private String instanceIp;
+    String serverIp;
 }

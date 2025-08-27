@@ -6,10 +6,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class StorageResponse {
+public class ServerResponse {
     private Integer id;
-    private String storageName;
-    private String storageCode;
-    private Integer instanceId;
+    private String instanceIp;
 }
 

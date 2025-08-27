@@ -2,6 +2,7 @@ package vn.viettel.vdt_gd2.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "LoadBalance")
@@ -9,24 +10,25 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LoadBalance {
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class LoadBalancer {
     @Id
     @Column(name = "id")
-    private Integer id;
+    Integer id;
 
     @Column(name = "lb_code")
-    private String lbCode;
+    String lbCode;
 
     @Column(name = "lb_name")
-    private String lbName;
+    String lbName;
 
     @Column(name = "ip")
-    private String ip;
+    String ip;
 
     @Column(name = "port")
-    private Integer port;
+    Integer port;
 
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private Service service;
+    ServiceEntity service;
 }

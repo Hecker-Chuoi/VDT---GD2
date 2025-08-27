@@ -7,7 +7,7 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ConnectionMapper {
-    ConnectionResponse entityToResponse(Connection entity);
-    List<ConnectionResponse> listEntityToListResponse(List<Connection> entities);
+    ConnectionResponse toResponse(Connection entity);
+    List<ConnectionResponse> toResponses(List<Connection> entities);
 }
 

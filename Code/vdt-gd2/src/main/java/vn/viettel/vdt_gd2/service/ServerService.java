@@ -4,22 +4,22 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import vn.viettel.vdt_gd2.entity.GroupModule;
-import vn.viettel.vdt_gd2.repository.GroupModuleRepository;
+import vn.viettel.vdt_gd2.entity.Server;
+import vn.viettel.vdt_gd2.repository.ServerRepository;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class GroupModuleService {
-    GroupModuleRepository repo;
+public class ServerService {
+    ServerRepository repo;
 
-    public GroupModule getGroupModuleById(Integer id) {
+    public Server getServerById(Integer id) {
         return repo.findById(id).orElse(null);
     }
 
-    public List<GroupModule> getGroupModulesByServiceId(Integer serviceId) {
-        return repo.findAllByService_Id(serviceId);
+    public List<Server> getAllServers() {
+        return repo.findAll();
     }
 }

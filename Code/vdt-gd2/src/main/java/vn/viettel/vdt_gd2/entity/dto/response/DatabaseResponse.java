@@ -1,13 +1,17 @@
 package vn.viettel.vdt_gd2.entity.dto.response;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class DatabaseResponse {
-    private Integer id;
-    private String databaseCode;
-    private String databaseName;
+    Integer id;
+    String databaseCode;
+    String databaseName;
 }

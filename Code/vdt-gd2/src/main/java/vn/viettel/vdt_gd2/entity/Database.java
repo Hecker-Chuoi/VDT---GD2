@@ -2,6 +2,9 @@ package vn.viettel.vdt_gd2.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Entity
 @Table(name = "Database")
@@ -9,22 +12,23 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Database {
     @Id
     @Column(name = "id")
-    private Integer id;
+    Integer id;
 
     @Column(name = "database_code")
-    private String databaseCode;
+    String databaseCode;
 
     @Column(name = "database_name")
-    private String databaseName;
+    String databaseName;
 
-    @ManyToOne
-    @JoinColumn(name = "instance_id")
-    private Instance instance;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "server_id")
+    Server server;
 
     @ManyToOne
     @JoinColumn(name = "service_id")
-    private Service service;
+    ServiceEntity service;
 }

@@ -6,8 +6,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InstanceResponse {
+public class LoadBalancerResponse {
     private Integer id;
-    private String instanceIp;
+    private String lbCode;
+    private String lbName;
+    private String ip;
+    private Integer port;
 }
-
