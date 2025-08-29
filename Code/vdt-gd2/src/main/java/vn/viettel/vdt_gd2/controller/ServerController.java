@@ -3,10 +3,7 @@ package vn.viettel.vdt_gd2.controller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.viettel.vdt_gd2.entity.Server;
 import vn.viettel.vdt_gd2.entity.dto.response.ApiResponse;
 import vn.viettel.vdt_gd2.entity.dto.response.DatabaseResponse;
@@ -35,9 +32,12 @@ public class ServerController {
     ModuleMapper moduleMapper;
 
     @GetMapping
-    public ApiResponse<List<ServerResponse>> getAllServers() {
+    public ApiResponse<List<ServerResponse>> getAllServers(
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
         return ApiResponse.<List<ServerResponse>>builder()
-                .result(mapper.toResponses(service.getAllServers()))
+                .result(mapper.toResponses(service.getAllServers(size, page)))
                 .build();
     }
 
@@ -49,16 +49,24 @@ public class ServerController {
     }
 
     @GetMapping("/{id}/databases")
-    public ApiResponse<List<DatabaseResponse>> getDatabasesByServerId(@PathVariable Integer id) {
+    public ApiResponse<List<DatabaseResponse>> getDatabasesByServerId(
+            @PathVariable Integer id,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
         return ApiResponse.<List<DatabaseResponse>>builder()
-                .result(databaseMapper.toResponses(databaseService.getDatabasesByServerId(id)))
+                .result(databaseMapper.toResponses(databaseService.getDatabasesByServerId(id, size, page)))
                 .build();
     }
 
     @GetMapping("/{id}/modules")
-    public ApiResponse<List<ModuleResponse>> getModulesByServerId(@PathVariable Integer id) {
+    public ApiResponse<List<ModuleResponse>> getModulesByServerId(
+            @PathVariable Integer id,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
         return ApiResponse.<List<ModuleResponse>>builder()
-                .result(moduleMapper.toResponses(moduleService.getModulesByServerId(id)))
+                .result(moduleMapper.toResponses(moduleService.getModulesByServerId(id, size, page)))
                 .build();
     }
 }

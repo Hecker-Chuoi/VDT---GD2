@@ -3,6 +3,7 @@ package vn.viettel.vdt_gd2.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.viettel.vdt_gd2.entity.Server;
 import vn.viettel.vdt_gd2.repository.ServerRepository;
@@ -19,7 +20,9 @@ public class ServerService {
         return repo.findById(id).orElse(null);
     }
 
-    public List<Server> getAllServers() {
-        return repo.findAll();
+    public List<Server> getAllServers(Integer size, Integer page) {
+        if(size == null || page == null)
+            return repo.findAll();
+        return repo.findAll(Pageable.ofSize(size).withPage(page)).getContent();
     }
 }

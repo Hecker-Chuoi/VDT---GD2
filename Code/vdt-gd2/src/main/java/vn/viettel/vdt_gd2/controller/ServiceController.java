@@ -3,10 +3,7 @@ package vn.viettel.vdt_gd2.controller;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import vn.viettel.vdt_gd2.entity.dto.response.*;
 import vn.viettel.vdt_gd2.service.DatabaseService;
 import vn.viettel.vdt_gd2.service.GroupModuleService;
@@ -35,9 +32,12 @@ public class ServiceController {
     LoadBalancerMapper loadBalanceMapper;
 
     @GetMapping
-    public ApiResponse<List<ServiceResponse>> getAllServices() {
+    public ApiResponse<List<ServiceResponse>> getAllServices(
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
         return ApiResponse.<List<ServiceResponse>>builder()
-                .result(mapper.toResponses(service.getAllServices()))
+                .result(mapper.toResponses(service.getAllServices(size, page)))
                 .build();
     }
 
@@ -49,23 +49,35 @@ public class ServiceController {
     }
 
     @GetMapping("/{id}/group-modules")
-    public ApiResponse<List<GroupModuleResponse>> getGroupModulesByServiceId(@PathVariable Integer id) {
+    public ApiResponse<List<GroupModuleResponse>> getGroupModulesByServiceId(
+            @PathVariable Integer id,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
         return ApiResponse.<List<GroupModuleResponse>>builder()
-                .result(groupModuleMapper.toResponses(groupModuleService.getGroupModulesByServiceId(id)))
+                .result(groupModuleMapper.toResponses(groupModuleService.getGroupModulesByServiceId(id, size, page)))
                 .build();
     }
 
     @GetMapping("/{id}/databases")
-    public ApiResponse<List<DatabaseResponse>> getDatabasesByServiceId(@PathVariable Integer id) {
+    public ApiResponse<List<DatabaseResponse>> getDatabasesByServiceId(
+            @PathVariable Integer id,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
         return ApiResponse.<List<DatabaseResponse>>builder()
-                .result(databaseMapper.toResponses(databaseService.getDatabasesByServiceId(id)))
+                .result(databaseMapper.toResponses(databaseService.getDatabasesByServiceId(id, size, page)))
                 .build();
     }
 
     @GetMapping("/{id}/load-balancers")
-    public ApiResponse<List<LoadBalancerResponse>> getLoadBalancersByServiceId(@PathVariable Integer id) {
+    public ApiResponse<List<LoadBalancerResponse>> getLoadBalancersByServiceId(
+            @PathVariable Integer id,
+            @RequestParam(required = false) Integer size,
+            @RequestParam(required = false) Integer page
+    ) {
         return ApiResponse.<List<LoadBalancerResponse>>builder()
-                .result(loadBalanceMapper.toResponses(loadBalancerService.getLoadBalancersByServiceId(id)))
+                .result(loadBalanceMapper.toResponses(loadBalancerService.getLoadBalancersByServiceId(id, size, page)))
                 .build();
     }
 }
