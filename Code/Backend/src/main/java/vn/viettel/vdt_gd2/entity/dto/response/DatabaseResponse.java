@@ -14,4 +14,7 @@ public class DatabaseResponse {
     Integer id;
     String databaseCode;
     String databaseName;
+    String serverIp;
+    Integer port;
+    StorageResponse storage;
 }

@@ -9,10 +9,13 @@ interface TopoNodeProps {
 
 export default function TopoNode({ data }: TopoNodeProps) {
   return (
-    <div className="bg-white rounded-xl shadow border px-4 py-2 flex flex-col items-center min-w-[120px] relative">
+    <div
+      className="flex flex-col items-center min-w-[40px] relative"
+      style={{ background: "transparent", boxShadow: "none" }}
+    >
       <Handle type="target" position={Position.Top} />
       <div className="mb-2">
-        <img src={data.icon} alt="icon" className="w-8 h-8" />
+        <img src={data.icon} alt="icon" className="w-20 h-20" />
       </div>
       <div className="font-semibold text-slate-700">{data.label}</div>
       <Handle type="source" position={Position.Bottom} />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import axios from "axios";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import ReactFlow, {
   useNodesState,
   useEdgesState,
@@ -8,13 +9,16 @@ import ReactFlow, {
   MiniMap,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { nodes as initialNodes, edges as initialEdges } from "./MockData";
-import TopoNode from "./nodes/TopoNode";
+// import { nodes as initialNodes, edges as initialEdges } from "./MockData";
 import { getLayoutedElements } from "../utils/LayoutElements";
 import NodeInfoPopup from "./NodeInfoPopup";
+import { convertServiceDetailToFlow } from "../utils/ConvertServiceDetail";
+import TopoNode from "./nodes/TopoNode";
+import GroupNode from "./nodes/GroupNode";
 
 const nodeTypes = {
   topoNode: TopoNode,
+  groupNode: GroupNode,
 };
 
 const legend = [
@@ -46,8 +50,10 @@ export default function SoftwareInfraDiagram() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [sidebarWidth, setSidebarWidth] = useState(window.innerWidth / 4);
+  const [groupExpandState, setGroupExpandState] = useState({}); // { [groupId]: boolean }
   const minSidebar = 200;
   const maxSidebar = window.innerWidth / 3;
+  const serviceId = Number.parseInt(useParams().serviceId);
 
   // Xử lý resize sidebar
   const handleSidebarResize = (e) => {
@@ -70,7 +76,7 @@ export default function SoftwareInfraDiagram() {
   };
 
   const handleNodeClick = (event, node) => {
-    console.log("Node clicked:", node);
+    // console.log("Node clicked:", node);
 
     setEdges((eds) =>
       eds.map((e) => {
@@ -87,21 +93,167 @@ export default function SoftwareInfraDiagram() {
     );
   };
 
-  const handleNodeContextMenu = (event, node) => {
+  const handleDoubleClick = (event, node) => {
     event.preventDefault();
     setContextNode(node);
     setContextMenuPos({ x: event.clientX, y: event.clientY });
     setShowContextMenu(true);
   };
 
-  useEffect(() => {
-    const { nodes, edges } = getLayoutedElements(
-      initialNodes,
-      initialEdges,
+  // Xử lý expand/collapse groupNode
+  const handleGroupExpand = (groupId) => {
+    console.log("Expanding group:", groupId);
+    setGroupExpandState((prev) => ({ ...prev, [groupId]: true }));
+    setEdges((prevEdges) => {
+      // Khi expand: trả lại edge cho từng node con
+      let newEdges = [...prevEdges];
+      // Tìm groupNode
+      const groupNode = nodes.find((n) => n.id === groupId);
+      if (groupNode && Array.isArray(groupNode.data.nodes)) {
+        groupNode.data.nodes.forEach((mod) => {
+          // Tìm các edge đang nối với groupNode, trả lại cho node con
+          newEdges = newEdges.map((e) => {
+            if (e.target === groupId && e._originalTarget === mod.id) {
+              return { ...e, target: mod.id };
+            }
+            if (e.source === groupId && e._originalSource === mod.id) {
+              return { ...e, source: mod.id };
+            }
+            return e;
+          });
+        });
+      }
+      return newEdges;
+    });
+    const { nodes: newNodes, edges: newEdges } = getLayoutedElements(
+      nodes,
+      edges,
       "TB"
     );
-    setNodes(nodes);
-    setEdges(edges);
+    setNodes(newNodes);
+    setEdges(newEdges);
+  };
+
+  const handleGroupCollapse = (groupId) => {
+    console.log("Collapsing group:", groupId);
+    setGroupExpandState((prev) => ({ ...prev, [groupId]: false }));
+    setEdges((prevEdges) => {
+      // Khi collapse: gộp edge về groupNode
+      let newEdges = [...prevEdges];
+      // Tìm groupNode
+      const groupNode = nodes.find((n) => n.id === groupId);
+      if (groupNode && Array.isArray(groupNode.data.nodes)) {
+        groupNode.data.nodes.forEach((mod) => {
+          // Tìm các edge nối với node con, chuyển về groupNode
+          newEdges = newEdges.map((e) => {
+            if (e.target === mod.id) {
+              return { ...e, _originalTarget: e.target, target: groupId };
+            }
+            if (e.source === mod.id) {
+              return { ...e, _originalSource: e.source, source: groupId };
+            }
+            return e;
+          });
+        });
+      }
+      return newEdges;
+    });
+    const { nodes: newNodes, edges: newEdges } = getLayoutedElements(
+      nodes,
+      edges,
+      "TB"
+    );
+    setNodes(newNodes);
+    setEdges(newEdges);
+  };
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await axios.get(
+        `http://localhost:8080/api/services/${serviceId}`
+      );
+      const serviceData = response.data.result;
+      console.log(serviceData);
+
+      // Biến lưu thông tin external
+      const external = { database: [], module: [], loadBalancer: [] };
+      let allConnections = [];
+
+      // Lấy connections cho từng module
+      for (const group of serviceData.groupModules) {
+        for (const mod of group.modules) {
+          const connectionResponse = await axios.get(
+            `http://localhost:8080/api/modules/connections?sourceModuleId=${mod.id}`
+          );
+          const connections = connectionResponse.data.result;
+          connections.forEach((conn) => {
+            allConnections.push({ ...conn, moduleId: mod.id });
+          });
+
+          for (const conn of connections) {
+            if (conn.type === 1) {
+              // // module
+              // const res = await axios.get(
+              //   `http://localhost:8080/api/find/modules?serverIp=${conn.ipDest}&port=${conn.port}`
+              // );
+              // external.module.push(res.data.result);
+            } else if (conn.type === 2) {
+              // load balancer
+              const res = await axios.get(
+                `http://localhost:8080/api/find/load-balancers?ip=${conn.ipDest}&port=${conn.port}`
+              );
+              // Đánh dấu là external
+              external.loadBalancer.push({
+                ...res.data.result,
+                isExternal: true,
+              });
+            } else if (conn.type === 3) {
+              // database
+              const res = await axios.get(
+                `http://localhost:8080/api/find/databases?serverIp=${conn.ipDest}&port=${conn.port}`
+              );
+              external.database.push(res.data.result);
+            }
+          }
+        }
+      }
+
+      // Gộp external vào serviceData
+      // Load balancer: gộp vào serviceData.loadBalances, đánh dấu isExternal
+      if (!serviceData.loadBalances) serviceData.loadBalances = [];
+      serviceData.loadBalances = [
+        ...serviceData.loadBalances.map((lb) => ({ ...lb, isExternal: false })),
+        ...external.loadBalancer,
+      ];
+
+      // Database: gộp vào serviceData.databases
+      if (!serviceData.databases) serviceData.databases = [];
+      serviceData.databases = [...serviceData.databases, ...external.database];
+
+      // Module: tạo groupModule external
+      if (!serviceData.groupModules) serviceData.groupModules = [];
+      if (external.module.length > 0) {
+        serviceData.groupModules.push({
+          id: "external",
+          groupModuleCode: "EXTERNAL",
+          groupModuleName: "External",
+          modules: external.module,
+        });
+      }
+
+      const { nodes: initialNodes, edges: initialEdges } =
+        convertServiceDetailToFlow(serviceData, allConnections);
+
+      const { nodes, edges } = getLayoutedElements(
+        initialNodes,
+        initialEdges,
+        "TB"
+      );
+
+      setNodes(nodes);
+      setEdges(edges);
+    }
+    fetchData();
   }, []);
 
   return (
@@ -194,10 +346,22 @@ export default function SoftwareInfraDiagram() {
           <ReactFlow
             fitView
             fitViewOptions={{ padding: 0.5 }}
-            nodes={nodes}
+            nodes={nodes.map((n) =>
+              n.type === "groupNode"
+                ? {
+                    ...n,
+                    data: {
+                      ...n.data,
+                      expanded: groupExpandState[n.id] || false,
+                      onExpand: () => handleGroupExpand(n.id),
+                      onCollapse: () => handleGroupCollapse(n.id),
+                    },
+                  }
+                : n
+            )}
             edges={edges}
             onNodeClick={handleNodeClick}
-            onNodeContextMenu={handleNodeContextMenu}
+            onNodeDoubleClick={handleDoubleClick}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             panOnDrag={true}
@@ -267,6 +431,7 @@ export default function SoftwareInfraDiagram() {
               </div>
             )}
           </ReactFlow>
+
           {/* Hiển thị context menu khi click chuột phải vào node */}
           {showContextMenu && contextNode && (
             <NodeInfoPopup

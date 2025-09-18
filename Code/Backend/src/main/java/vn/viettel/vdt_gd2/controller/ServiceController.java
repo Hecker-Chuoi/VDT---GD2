@@ -32,19 +32,19 @@ public class ServiceController {
     LoadBalancerMapper loadBalanceMapper;
 
     @GetMapping
-    public ApiResponse<List<ServiceResponse>> getAllServices(
+    public ApiResponse<List<ServiceBasicResponse>> getAllServices(
             @RequestParam(required = false) Integer size,
             @RequestParam(required = false) Integer page
     ) {
-        return ApiResponse.<List<ServiceResponse>>builder()
+        return ApiResponse.<List<ServiceBasicResponse>>builder()
                 .result(mapper.toResponses(service.getAllServices(size, page)))
                 .build();
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<ServiceResponse> getServiceById(@PathVariable Integer id) {
-        return ApiResponse.<ServiceResponse>builder()
-                .result(mapper.toResponse(service.getServiceById(id)))
+    public ApiResponse<ServiceDetailResponse> getServiceById(@PathVariable Integer id) {
+        return ApiResponse.<ServiceDetailResponse>builder()
+                .result(mapper.toDetailResponse(service.getServiceById(id)))
                 .build();
     }
 

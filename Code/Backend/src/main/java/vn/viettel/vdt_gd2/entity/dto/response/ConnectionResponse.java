@@ -10,6 +10,8 @@ public class ConnectionResponse {
     private Integer id;
     private String ipSource;
     private String ipDest;
+    private Integer sourceModuleId;
+    private Integer destModuleId;
     private Integer port;
     private Integer type;
 }
