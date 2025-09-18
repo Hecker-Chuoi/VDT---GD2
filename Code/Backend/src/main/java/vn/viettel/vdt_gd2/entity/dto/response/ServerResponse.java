@@ -8,6 +8,6 @@ import lombok.*;
 @Builder
 public class ServerResponse {
     private Integer id;
-    private String instanceIp;
+    private String serverIp;
 }
 

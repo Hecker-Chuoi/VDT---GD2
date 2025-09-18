@@ -26,9 +26,12 @@ public class Module {
     @JoinColumn(name = "service_id")
     ServiceEntity service;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "server_id")
     Server server;
+
+    @Column(name = "port")
+    Integer port;
 
     @Column(name = "module_code")
     String moduleCode;

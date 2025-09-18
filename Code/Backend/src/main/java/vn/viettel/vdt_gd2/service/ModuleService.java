@@ -36,12 +36,12 @@ public class ModuleService {
         return repo.getModulesByServer_Id(serverId, Pageable.ofSize(size).withPage(page));
     }
 
-    public List<Connection> getConnections(Integer sourceId, Integer destId, Integer type) {
+    public List<Connection> getConnections(Integer sourceId,Integer type) {
         if(type == null){
-            return connectionRepo.getConnectionsBySourceModule_IdOrDestModule_Id(sourceId, destId);
+            return connectionRepo.getConnectionsBySourceModule_Id(sourceId);
         }
         else{
-            return connectionRepo.getConnectionsBySourceModule_IdOrDestModule_IdAndType(sourceId, destId, type);
+            return connectionRepo.getConnectionsBySourceModule_IdAndType(sourceId, type);
         }
     }
 }

@@ -22,6 +22,6 @@ public class Server {
     @Column(name = "id")
     Integer id;
 
-    @Column(name = "instance_ip")
+    @Column(name = "server_ip")
     String serverIp;
 }

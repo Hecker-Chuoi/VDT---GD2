@@ -18,7 +18,7 @@ public class GroupModule {
     @Column(name = "id")
     Integer id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id")
     ServiceEntity service;
 

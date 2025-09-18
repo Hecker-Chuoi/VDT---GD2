@@ -33,11 +33,10 @@ public class ModuleController {
     @GetMapping("/connections")
     public ApiResponse<List<ConnectionResponse>> getConnectionsBySourceModule_IdOrDestModule_Id(
             @RequestParam(required = false) Integer sourceModuleId,
-            @RequestParam(required = false) Integer destModuleId,
             @RequestParam(required = false) Integer type
     ){
         return ApiResponse.<List<ConnectionResponse>>builder()
-                .result(connectionMapper.toResponses(service.getConnections(sourceModuleId, destModuleId, type)))
+                .result(connectionMapper.toResponses(service.getConnections(sourceModuleId, type)))
                 .build();
     }
 }

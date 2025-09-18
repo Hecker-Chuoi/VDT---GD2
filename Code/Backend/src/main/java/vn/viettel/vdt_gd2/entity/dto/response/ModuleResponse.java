@@ -12,4 +12,5 @@ public class ModuleResponse {
     Integer id;
     String moduleCode;
     String moduleName;
+    ServerResponse server;
 }

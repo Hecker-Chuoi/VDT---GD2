@@ -5,6 +5,26 @@ import { Home } from "./components/Home";
 import SoftwareInfraDiagram from "./components/SoftwareInfraDiagram";
 import LargeSoftwareInfraDiagram from "./components/LargeSoftwareInfraDiagram";
 import TopoNode from "./components/nodes/TopoNode";
+import GroupNode from "./components/nodes/GroupNode";
+
+const servers = [
+  { id: "srv1", name: "Server 1 (Vercel)" },
+  { id: "srv2", name: "Server 2" },
+  { id: "srv3", name: "Server 3" },
+  { id: "srv4", name: "Server 4" },
+  { id: "srv5", name: "Server 5" },
+];
+
+const nodes = servers.flatMap((server) => {
+  return {
+    id: server.id,
+    type: "topoNode",
+    icon: "/icons/server.png",
+    label: server.name,
+    sourcePosition: "bottom",
+    targetPosition: "top",
+  };
+});
 
 export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -100,12 +120,18 @@ export default function App() {
           )
         }
       />
+      <Route path="/topo/:serviceId" element={<SoftwareInfraDiagram />} />
       <Route path="/test/topology" element={<LargeSoftwareInfraDiagram />} />
-      <Route path="/test/diagram" element={<SoftwareInfraDiagram />} />
       <Route
         path="/test"
         element={
-          <TopoNode data={{ icon: "/icons/server.png", label: "server" }} />
+          <GroupNode
+            data={{
+              icon: "/icons/group-module.png",
+              label: "Test Group",
+              nodes: nodes,
+            }}
+          />
         }
       />
     </Routes>

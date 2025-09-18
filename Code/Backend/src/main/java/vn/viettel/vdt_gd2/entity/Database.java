@@ -24,11 +24,18 @@ public class Database {
     @Column(name = "database_name")
     String databaseName;
 
+    @Column(name = "port")
+    Integer port;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_id")
     Server server;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id")
     ServiceEntity service;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "storage_id")
+    Storage storage;
 }

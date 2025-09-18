@@ -16,3 +16,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         show_sql: true
         format_sql: true
+
+jwt:
+  duration:
+    access-token: 180
+    refresh-token: 4320
+  issuer: "nocpro"
+  secret-key: "2V1jD5V4U7JOAO0XavZU90W2MNaVfcRrdwEzdFejWfvMAFi5dMGoE5CEJAAY9onL"

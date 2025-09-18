@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { infraData } from "./MockData";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -37,14 +38,13 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
+import axios from "axios";
 
 interface Service {
   id: string;
   serviceCode: string;
   serviceName: string;
-  status: "active" | "inactive" | "maintenance";
-  nodes: number;
-  lastUpdated: string;
+  status: "active" | "maintenance" | "inactive";
 }
 
 interface HomeProps {
@@ -54,10 +54,25 @@ interface HomeProps {
 
 export function Home({ onLogout, waitlist }: HomeProps) {
   const [showWaitlist, setShowWaitlist] = useState(false);
+  const [data, setData] = useState<Service[]>([]);
   const [activeTab, setActiveTab] = useState("services");
   const [selectedService, setSelectedService] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const servicesPerPage = 10;
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/api/services");
+        setData(response.data.result);
+      } catch (error) {
+        console.error("Error fetching services:", error);
+      }
+    };
+    fetchData();
+    console.log("Fetched services:", data);
+  }, [currentPage]);
 
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
@@ -72,228 +87,14 @@ export function Home({ onLogout, waitlist }: HomeProps) {
     });
   };
 
-  // Mock services data - expanded to 25 services for pagination demonstration
-  const allServices: Service[] = [
-    {
-      id: "SVC-001",
-      serviceCode: "MPLS-001",
-      serviceName: "Enterprise MPLS Connection - Branch Office Alpha",
-      status: "active",
-      nodes: 12,
-      lastUpdated: "2024-01-15 14:30",
-    },
-    {
-      id: "SVC-002",
-      serviceCode: "INET-202",
-      serviceName: "Internet Gateway Service - Data Center Primary",
-      status: "active",
-      nodes: 8,
-      lastUpdated: "2024-01-15 14:28",
-    },
-    {
-      id: "SVC-003",
-      serviceCode: "VPN-015",
-      serviceName: "Site-to-Site VPN - Remote Locations",
-      status: "maintenance",
-      nodes: 6,
-      lastUpdated: "2024-01-15 13:45",
-    },
-    {
-      id: "SVC-004",
-      serviceCode: "MPLS-002",
-      serviceName: "Enterprise MPLS Connection - Branch Office Beta",
-      status: "active",
-      nodes: 10,
-      lastUpdated: "2024-01-15 14:32",
-    },
-    {
-      id: "SVC-005",
-      serviceCode: "INET-203",
-      serviceName: "Internet Gateway Service - Backup Route",
-      status: "inactive",
-      nodes: 4,
-      lastUpdated: "2024-01-15 12:15",
-    },
-    {
-      id: "SVC-006",
-      serviceCode: "DDOS-001",
-      serviceName: "DDoS Protection Service - Main Infrastructure",
-      status: "active",
-      nodes: 15,
-      lastUpdated: "2024-01-15 14:35",
-    },
-    {
-      id: "SVC-007",
-      serviceCode: "MPLS-003",
-      serviceName: "Enterprise MPLS Connection - Branch Office Gamma",
-      status: "active",
-      nodes: 9,
-      lastUpdated: "2024-01-15 14:25",
-    },
-    {
-      id: "SVC-008",
-      serviceCode: "VPN-016",
-      serviceName: "Client Access VPN - Remote Workers",
-      status: "active",
-      nodes: 14,
-      lastUpdated: "2024-01-15 14:20",
-    },
-    {
-      id: "SVC-009",
-      serviceCode: "INET-204",
-      serviceName: "Internet Gateway Service - Secondary Route",
-      status: "active",
-      nodes: 6,
-      lastUpdated: "2024-01-15 14:18",
-    },
-    {
-      id: "SVC-010",
-      serviceCode: "LAN-001",
-      serviceName: "Local Area Network - Headquarters",
-      status: "active",
-      nodes: 18,
-      lastUpdated: "2024-01-15 14:15",
-    },
-    {
-      id: "SVC-011",
-      serviceCode: "WAN-001",
-      serviceName: "Wide Area Network - Multi-Site Connection",
-      status: "active",
-      nodes: 22,
-      lastUpdated: "2024-01-15 14:10",
-    },
-    {
-      id: "SVC-012",
-      serviceCode: "MPLS-004",
-      serviceName: "Enterprise MPLS Connection - Branch Office Delta",
-      status: "maintenance",
-      nodes: 7,
-      lastUpdated: "2024-01-15 13:55",
-    },
-    {
-      id: "SVC-013",
-      serviceCode: "VPN-017",
-      serviceName: "Site-to-Site VPN - International Offices",
-      status: "active",
-      nodes: 11,
-      lastUpdated: "2024-01-15 14:05",
-    },
-    {
-      id: "SVC-014",
-      serviceCode: "INET-205",
-      serviceName: "Internet Gateway Service - Disaster Recovery",
-      status: "inactive",
-      nodes: 3,
-      lastUpdated: "2024-01-15 11:30",
-    },
-    {
-      id: "SVC-015",
-      serviceCode: "DDOS-002",
-      serviceName: "DDoS Protection Service - Edge Infrastructure",
-      status: "active",
-      nodes: 12,
-      lastUpdated: "2024-01-15 14:00",
-    },
-    {
-      id: "SVC-016",
-      serviceCode: "MPLS-005",
-      serviceName: "Enterprise MPLS Connection - Regional Hub",
-      status: "active",
-      nodes: 16,
-      lastUpdated: "2024-01-15 13:58",
-    },
-    {
-      id: "SVC-017",
-      serviceCode: "VPN-018",
-      serviceName: "Mobile VPN Access - Field Operations",
-      status: "active",
-      nodes: 8,
-      lastUpdated: "2024-01-15 13:50",
-    },
-    {
-      id: "SVC-018",
-      serviceCode: "LAN-002",
-      serviceName: "Local Area Network - Manufacturing Plant",
-      status: "active",
-      nodes: 20,
-      lastUpdated: "2024-01-15 13:45",
-    },
-    {
-      id: "SVC-019",
-      serviceCode: "INET-206",
-      serviceName: "Internet Gateway Service - Load Balanced",
-      status: "active",
-      nodes: 10,
-      lastUpdated: "2024-01-15 13:40",
-    },
-    {
-      id: "SVC-020",
-      serviceCode: "WAN-002",
-      serviceName: "Wide Area Network - Backup Connection",
-      status: "maintenance",
-      nodes: 5,
-      lastUpdated: "2024-01-15 12:30",
-    },
-    {
-      id: "SVC-021",
-      serviceCode: "MPLS-006",
-      serviceName: "Enterprise MPLS Connection - Distribution Center",
-      status: "active",
-      nodes: 13,
-      lastUpdated: "2024-01-15 13:35",
-    },
-    {
-      id: "SVC-022",
-      serviceCode: "VPN-019",
-      serviceName: "Partner Network VPN - B2B Connections",
-      status: "active",
-      nodes: 9,
-      lastUpdated: "2024-01-15 13:30",
-    },
-    {
-      id: "SVC-023",
-      serviceCode: "DDOS-003",
-      serviceName: "DDoS Protection Service - Cloud Infrastructure",
-      status: "active",
-      nodes: 17,
-      lastUpdated: "2024-01-15 13:25",
-    },
-    {
-      id: "SVC-024",
-      serviceCode: "LAN-003",
-      serviceName: "Local Area Network - Research Facility",
-      status: "active",
-      nodes: 11,
-      lastUpdated: "2024-01-15 13:20",
-    },
-    {
-      id: "SVC-025",
-      serviceCode: "INET-207",
-      serviceName: "Internet Gateway Service - High Availability",
-      status: "active",
-      nodes: 14,
-      lastUpdated: "2024-01-15 13:15",
-    },
-  ];
-
-  // Mock data for dashboard metrics
-  const metrics = {
-    totalNodes: 30,
-    activeAgents: 8,
-    detectedThreats: 2,
-    networkHealth: 98,
-    totalServices: allServices.length,
-    activeServices: allServices.filter((s) => s.status === "active").length,
-  };
-
   // Calculate pagination
-  const totalPages = Math.ceil(allServices.length / servicesPerPage);
+  const totalPages = Math.ceil(data.length / servicesPerPage);
   const startIndex = (currentPage - 1) * servicesPerPage;
   const endIndex = startIndex + servicesPerPage;
-  const services = allServices.slice(startIndex, endIndex);
+  const services = data.slice(startIndex, endIndex);
 
   const handleServiceClick = (service: Service) => {
-    setSelectedService(service);
+    navigate(`/topo/${service.id}`);
   };
 
   const handleBackToDashboard = () => {
@@ -558,9 +359,8 @@ export function Home({ onLogout, waitlist }: HomeProps) {
                     Click on any service to view its topology.
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Showing {startIndex + 1}-
-                    {Math.min(endIndex, allServices.length)} of{" "}
-                    {allServices.length} services
+                    Showing {startIndex + 1}-{Math.min(endIndex, data.length)}{" "}
+                    of {data.length} services
                   </p>
                 </div>
               </CardHeader>
@@ -653,72 +453,71 @@ export function Home({ onLogout, waitlist }: HomeProps) {
                 </div>
 
                 {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-between px-4 py-4 border-t border-slate-200">
-                    <div className="text-sm text-muted-foreground">
-                      Page {currentPage} of {totalPages}
-                    </div>
 
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handlePreviousPage}
-                        disabled={currentPage === 1}
-                        className="gap-1"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                        Previous
-                      </Button>
-
-                      {/* Page Numbers */}
-                      <div className="flex items-center gap-1">
-                        {Array.from(
-                          { length: Math.min(5, totalPages) },
-                          (_, i) => {
-                            let pageNumber;
-                            if (totalPages <= 5) {
-                              pageNumber = i + 1;
-                            } else if (currentPage <= 3) {
-                              pageNumber = i + 1;
-                            } else if (currentPage >= totalPages - 2) {
-                              pageNumber = totalPages - 4 + i;
-                            } else {
-                              pageNumber = currentPage - 2 + i;
-                            }
-
-                            return (
-                              <Button
-                                key={pageNumber}
-                                variant={
-                                  currentPage === pageNumber
-                                    ? "default"
-                                    : "outline"
-                                }
-                                size="sm"
-                                onClick={() => handlePageClick(pageNumber)}
-                                className="w-8 h-8 p-0"
-                              >
-                                {pageNumber}
-                              </Button>
-                            );
-                          }
-                        )}
-                      </div>
-
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleNextPage}
-                        disabled={currentPage === totalPages}
-                        className="gap-1"
-                      >
-                        Next
-                        <ChevronRight className="w-4 h-4" />
-                      </Button>
-                    </div>
+                <div className="flex items-center justify-between px-4 py-4 border-t border-slate-200">
+                  <div className="text-sm text-muted-foreground">
+                    Page {currentPage} of {totalPages}
                   </div>
-                )}
+
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                      className="gap-1"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      Previous
+                    </Button>
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center gap-1">
+                      {Array.from(
+                        { length: Math.min(5, totalPages) },
+                        (_, i) => {
+                          let pageNumber;
+                          if (totalPages <= 5) {
+                            pageNumber = i + 1;
+                          } else if (currentPage <= 3) {
+                            pageNumber = i + 1;
+                          } else if (currentPage >= totalPages - 2) {
+                            pageNumber = totalPages - 4 + i;
+                          } else {
+                            pageNumber = currentPage - 2 + i;
+                          }
+
+                          return (
+                            <Button
+                              key={pageNumber}
+                              variant={
+                                currentPage === pageNumber
+                                  ? "default"
+                                  : "outline"
+                              }
+                              size="sm"
+                              onClick={() => handlePageClick(pageNumber)}
+                              className="w-8 h-8 p-0"
+                            >
+                              {pageNumber}
+                            </Button>
+                          );
+                        }
+                      )}
+                    </div>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                      className="gap-1"
+                    >
+                      Next
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
