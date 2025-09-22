@@ -8,6 +8,9 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = ModuleMapper.class)
 public interface GroupModuleMapper {
+    @Mapping(target = "id", expression = "java(\"group_\" + entity.getId())")
     GroupModuleResponse toResponse(GroupModule entity);
+
+    @Mapping(target = "id", expression = "java(\"group_\" + entity.getId())")
     List<GroupModuleResponse> toResponses(List<GroupModule> entities);
 }

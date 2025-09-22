@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GroupModuleResponse {
-    Integer id;
+    String id;
     String groupModuleCode;
     String groupModuleName;
     List<ModuleResponse> modules;

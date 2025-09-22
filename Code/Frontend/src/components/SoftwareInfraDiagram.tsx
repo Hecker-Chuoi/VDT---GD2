@@ -15,6 +15,7 @@ import NodeInfoPopup from "./NodeInfoPopup";
 import { convertServiceDetailToFlow } from "../utils/ConvertServiceDetail";
 import TopoNode from "./nodes/TopoNode";
 import GroupNode from "./nodes/GroupNode";
+import { ApiResponse, ServiceResult } from "./DataType";
 
 const nodeTypes = {
   topoNode: TopoNode,
@@ -169,80 +170,83 @@ export default function SoftwareInfraDiagram() {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get(
+      const response = await axios.get<ApiResponse<ServiceResult>>(
         `http://localhost:8080/api/services/${serviceId}`
       );
-      const serviceData = response.data.result;
+      const serviceData: ServiceResult = response.data.result;
       console.log(serviceData);
 
-      // Biến lưu thông tin external
-      const external = { database: [], module: [], loadBalancer: [] };
-      let allConnections = [];
+      // // Biến lưu thông tin external
+      // const external = { database: [], module: [], loadBalancer: [] };
+      // let allConnections = [];
 
-      // Lấy connections cho từng module
-      for (const group of serviceData.groupModules) {
-        for (const mod of group.modules) {
-          const connectionResponse = await axios.get(
-            `http://localhost:8080/api/modules/connections?sourceModuleId=${mod.id}`
-          );
-          const connections = connectionResponse.data.result;
-          connections.forEach((conn) => {
-            allConnections.push({ ...conn, moduleId: mod.id });
-          });
+      // // Lấy connections cho từng module
+      // for (const group of serviceData.groupModules) {
+      //   for (const mod of group.modules) {
+      //     const connectionResponse = await axios.get(
+      //       `http://localhost:8080/api/modules/connections?sourceModuleId=${mod.id}`
+      //     );
+      //     const connections = connectionResponse.data.result;
+      //     connections.forEach((conn) => {
+      //       allConnections.push({ ...conn, moduleId: mod.id });
+      //     });
 
-          for (const conn of connections) {
-            if (conn.type === 1) {
-              // // module
-              // const res = await axios.get(
-              //   `http://localhost:8080/api/find/modules?serverIp=${conn.ipDest}&port=${conn.port}`
-              // );
-              // external.module.push(res.data.result);
-            } else if (conn.type === 2) {
-              // load balancer
-              const res = await axios.get(
-                `http://localhost:8080/api/find/load-balancers?ip=${conn.ipDest}&port=${conn.port}`
-              );
-              // Đánh dấu là external
-              external.loadBalancer.push({
-                ...res.data.result,
-                isExternal: true,
-              });
-            } else if (conn.type === 3) {
-              // database
-              const res = await axios.get(
-                `http://localhost:8080/api/find/databases?serverIp=${conn.ipDest}&port=${conn.port}`
-              );
-              external.database.push(res.data.result);
-            }
-          }
-        }
-      }
+      //     for (const conn of connections) {
+      //       if (conn.type === 1) {
+      //         // // module
+      //         // const res = await axios.get(
+      //         //   `http://localhost:8080/api/find/modules?serverIp=${conn.ipDest}&port=${conn.port}`
+      //         // );
+      //         // external.module.push(res.data.result);
+      //       } else if (conn.type === 2) {
+      //         // load balancer
+      //         const res = await axios.get(
+      //           `http://localhost:8080/api/find/load-balancers?ip=${conn.ipDest}&port=${conn.port}`
+      //         );
+      //         // Đánh dấu là external
+      //         external.loadBalancer.push({
+      //           ...res.data.result,
+      //           isExternal: true,
+      //         });
+      //       } else if (conn.type === 3) {
+      //         // database
+      //         const res = await axios.get(
+      //           `http://localhost:8080/api/find/databases?serverIp=${conn.ipDest}&port=${conn.port}`
+      //         );
+      //         external.database.push(res.data.result);
+      //       }
+      //     }
+      //   }
+      // }
 
-      // Gộp external vào serviceData
-      // Load balancer: gộp vào serviceData.loadBalances, đánh dấu isExternal
-      if (!serviceData.loadBalances) serviceData.loadBalances = [];
-      serviceData.loadBalances = [
-        ...serviceData.loadBalances.map((lb) => ({ ...lb, isExternal: false })),
-        ...external.loadBalancer,
-      ];
+      // // Gộp external vào serviceData
+      // // Load balancer: gộp vào serviceData.loadBalances, đánh dấu isExternal
+      // if (!serviceData.loadBalances) serviceData.loadBalances = [];
+      // serviceData.loadBalances = [
+      //   ...serviceData.loadBalances.map((lb) => ({ ...lb, isExternal: false })),
+      //   ...external.loadBalancer,
+      // ];
 
-      // Database: gộp vào serviceData.databases
-      if (!serviceData.databases) serviceData.databases = [];
-      serviceData.databases = [...serviceData.databases, ...external.database];
+      // // Database: gộp vào serviceData.databases
+      // if (!serviceData.databases) serviceData.databases = [];
+      // serviceData.databases = [...serviceData.databases, ...external.database];
 
-      // Module: tạo groupModule external
-      if (!serviceData.groupModules) serviceData.groupModules = [];
-      if (external.module.length > 0) {
-        serviceData.groupModules.push({
-          id: "external",
-          groupModuleCode: "EXTERNAL",
-          groupModuleName: "External",
-          modules: external.module,
-        });
-      }
+      // // Module: tạo groupModule external
+      // if (!serviceData.groupModules) serviceData.groupModules = [];
+      // if (external.module.length > 0) {
+      //   serviceData.groupModules.push({
+      //     id: "external",
+      //     groupModuleCode: "EXTERNAL",
+      //     groupModuleName: "External",
+      //     modules: external.module,
+      //   });
+      // }
 
       const { nodes: initialNodes, edges: initialEdges } =
-        convertServiceDetailToFlow(serviceData, allConnections);
+        convertServiceDetailToFlow(serviceData);
+
+      console.log(initialNodes);
+      console.log(initialEdges);
 
       const { nodes, edges } = getLayoutedElements(
         initialNodes,

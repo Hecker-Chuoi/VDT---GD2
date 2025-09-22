@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ServerResponse {
-    private Integer id;
+    private String id;
     private String serverIp;
 }
 

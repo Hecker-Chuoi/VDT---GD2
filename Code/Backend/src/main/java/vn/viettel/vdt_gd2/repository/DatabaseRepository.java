@@ -12,5 +12,5 @@ public interface DatabaseRepository extends JpaRepository<Database, Integer> {
     List<Database> getDatabasesByService_Id(Integer serviceId, Pageable pageable);
     List<Database> getDatabasesByServer_Id(Integer serverId);
     List<Database> getDatabasesByServer_Id(Integer serverId, Pageable pageable);
-    Optional<Database> findByServer_ServerIpAndPort(String serverIp, Integer port);
+    Optional<Database> findByServer_ServerIp(String serverIp);
 }

@@ -11,10 +11,9 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DatabaseResponse {
-    Integer id;
+    String id;
     String databaseCode;
     String databaseName;
     String serverIp;
-    Integer port;
-    StorageResponse storage;
+//    StorageResponse storage;
 }

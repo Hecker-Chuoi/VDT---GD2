@@ -37,10 +37,9 @@ public class FindInstanceController {
 
     @GetMapping("/databases")
     public ApiResponse<DatabaseResponse> getDatabase(
-            @RequestParam String serverIp,
-            @RequestParam int port
+            @RequestParam String serverIp
     ){
-        Optional<Database> database = databaseRepository.findByServer_ServerIpAndPort(serverIp, port);
+        Optional<Database> database = databaseRepository.findByServer_ServerIp(serverIp);
         if(database.isEmpty())
             return ApiResponse.<DatabaseResponse>builder()
                     .statusCode(StatusCode.BAD_REQUEST.getCode())

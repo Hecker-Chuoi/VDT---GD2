@@ -24,12 +24,12 @@ public class ServiceEntity {
     @Column(name = "service_name")
     String serviceName;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
     List<GroupModule> groupModules;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
-    List<Database> databases;
+//    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
+//    List<Database> databases;
 
-    @OneToMany(mappedBy = "service", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "service", fetch = FetchType.LAZY)
     List<LoadBalancer> loadBalances;
 }

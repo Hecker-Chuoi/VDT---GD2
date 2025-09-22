@@ -8,8 +8,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", uses = {StorageMapper.class})
 public interface DatabaseMapper {
+    @Mapping(target = "id", expression = "java(\"db_\" + entity.getId())")
     @Mapping(target = "serverIp", source = "server.serverIp")
     DatabaseResponse toResponse(Database entity);
+
+    @Mapping(target = "id", expression = "java(\"db_\" + entity.getId())")
     @Mapping(target = "serverIp", source = "server.serverIp")
     List<DatabaseResponse> toResponses(List<Database> entities);
 }

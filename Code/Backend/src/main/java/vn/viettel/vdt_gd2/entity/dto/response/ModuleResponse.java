@@ -9,8 +9,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ModuleResponse {
-    Integer id;
+    String id;
     String moduleCode;
     String moduleName;
-    ServerResponse server;
+//    ServerResponse server;
 }

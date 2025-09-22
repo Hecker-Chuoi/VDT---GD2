@@ -17,11 +17,14 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceDetailResponse {
-    Integer id;
+    String id;
     String serviceCode;
     String serviceName;
 
     List<GroupModuleResponse> groupModules;
-    List<DatabaseResponse> databases;
     List<LoadBalancerResponse> loadBalances;
+    List<ServerResponse> servers;
+    List<DatabaseResponse> databases;
+    List<StorageResponse> storages;
+    List<Edge> edges;
 }

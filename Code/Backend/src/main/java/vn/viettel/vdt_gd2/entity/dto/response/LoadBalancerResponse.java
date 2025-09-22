@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class LoadBalancerResponse {
-    private Integer id;
+    private String id;
     private String lbCode;
     private String lbName;
     private String ip;

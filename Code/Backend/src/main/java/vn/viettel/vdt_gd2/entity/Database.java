@@ -24,9 +24,6 @@ public class Database {
     @Column(name = "database_name")
     String databaseName;
 
-    @Column(name = "port")
-    Integer port;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "server_id")
     Server server;
